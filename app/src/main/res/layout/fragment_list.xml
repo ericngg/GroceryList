@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="project.eric.grocerylist.GroceryListViewModel" />
+            type="project.eric.grocerylist.list.GroceryListViewModel" />
 
     </data>
 

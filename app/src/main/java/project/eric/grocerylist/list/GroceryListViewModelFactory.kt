@@ -1,4 +1,4 @@
-package project.eric.grocerylist
+package project.eric.grocerylist.list
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
@@ -11,6 +11,6 @@ class GroceryListViewModelFactory(val dao: GroceryDatabaseDao, val app: Applicat
             @Suppress("uncheck_cast")
             return GroceryListViewModel(dao, app) as T
         }
-        throw IllegalArgumentException("Error creating mainViewModel")
+        throw IllegalArgumentException("Error creating GroceryListViewModel")
     }
 }

@@ -1,14 +1,14 @@
-package project.eric.grocerylist
+package project.eric.grocerylist.list
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import project.eric.grocerylist.R
 import project.eric.grocerylist.database.GroceryDatabase
 import project.eric.grocerylist.databinding.FragmentListBinding
 
@@ -26,7 +26,8 @@ class GroceryListFragment : Fragment() {
 
         val dataSource = GroceryDatabase.getInstance(application).groceryDatabaseDao
         val viewModelFactory = GroceryListViewModelFactory(dataSource, application)
-        groceryListViewModel = ViewModelProviders.of(this, viewModelFactory).get(GroceryListViewModel::class.java)
+        groceryListViewModel = ViewModelProviders.of(this, viewModelFactory).get(
+            GroceryListViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = groceryListViewModel
@@ -40,6 +41,15 @@ class GroceryListFragment : Fragment() {
             Log.i(TAG, "grocery list updated")
         })
 
+        groceryListViewModel.navigateToShoppingCart.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                this.findNavController().navigate(GroceryListFragmentDirections.actionGroceryListFragmentToShoppingCartFragment())
+                groceryListViewModel.onNavigatedToShoppingCart()
+            }
+        })
+
+        setHasOptionsMenu(true)
+        activity?.title = "Grocery List"
         return binding.root
     }
 
@@ -52,4 +62,14 @@ class GroceryListFragment : Fragment() {
         groceryListViewModel.fetchGroceries()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.glmenu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        groceryListViewModel.onNavigateToShoppingCart()
+
+        return true
+    }
 }

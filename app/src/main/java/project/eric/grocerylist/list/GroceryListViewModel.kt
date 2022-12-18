@@ -1,11 +1,10 @@
-package project.eric.grocerylist
+package project.eric.grocerylist.list
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +18,10 @@ class GroceryListViewModel(val dao: GroceryDatabaseDao, application: Application
     private val _groceries = MutableLiveData<List<Grocery>>()
     val groceries: LiveData<List<Grocery>>
         get() = _groceries
+
+    private val _navigateToShoppingCart = MutableLiveData<Boolean>()
+    val navigateToShoppingCart
+        get() = _navigateToShoppingCart
 
     fun init() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -50,5 +53,13 @@ class GroceryListViewModel(val dao: GroceryDatabaseDao, application: Application
                 Log.e(TAG, "Groceries list fetch error $e")
             }
         }
+    }
+
+    fun onNavigateToShoppingCart() {
+        _navigateToShoppingCart.value = true
+    }
+
+    fun onNavigatedToShoppingCart() {
+        _navigateToShoppingCart.value = false
     }
 }

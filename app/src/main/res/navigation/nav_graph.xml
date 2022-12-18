@@ -5,6 +5,14 @@
     app:startDestination="@id/groceryListFragment">
     <fragment
         android:id="@+id/groceryListFragment"
-        android:name="project.eric.grocerylist.GroceryListFragment"
-        android:label="GroceryListFragment" />
+        android:name="project.eric.grocerylist.list.GroceryListFragment"
+        android:label="GroceryListFragment" >
+        <action
+            android:id="@+id/action_groceryListFragment_to_shoppingCartFragment"
+            app:destination="@id/shoppingCartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shoppingCartFragment"
+        android:name="project.eric.grocerylist.shoppingcart.ShoppingCartFragment"
+        android:label="ShoppingCartFragment" />
 </navigation>

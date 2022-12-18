@@ -1,4 +1,4 @@
-package project.eric.grocerylist
+package project.eric.grocerylist.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
