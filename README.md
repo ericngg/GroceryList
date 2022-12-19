@@ -16,7 +16,7 @@ The following **required** functionality is completed:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://github.com/ericngg/FBU-Twitter/blob/main/twitterdemo.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/ericngg/GroceryList/blob/main/grocerylist.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIFs created with [screen2gif](https://www.screentogif.com/).
 
