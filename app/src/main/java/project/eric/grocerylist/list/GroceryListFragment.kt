@@ -16,14 +16,16 @@ import project.eric.grocerylist.databinding.FragmentListBinding
 class GroceryListFragment : Fragment() {
 
     private val TAG = "GroceryListFragment"
-
     private lateinit var groceryListViewModel: GroceryListViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+        // binding and application
         val binding = FragmentListBinding.inflate(inflater)
         val application = requireNotNull(this.activity).application
 
+        // database and viewmodel
         val dataSource = GroceryDatabase.getInstance(application).groceryDatabaseDao
         val viewModelFactory = GroceryListViewModelFactory(dataSource, application)
         groceryListViewModel = ViewModelProviders.of(this, viewModelFactory).get(
@@ -32,15 +34,25 @@ class GroceryListFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = groceryListViewModel
 
-        val adapter = GroceryAdapter()
+        // adapter
+        val adapter = GroceryAdapter(
+            GroceryAdapter.AddGroceryListener { grocery ->
+            groceryListViewModel.onAddClick(grocery)
+        }, GroceryAdapter.SubGroceryListener { grocery ->
+            groceryListViewModel.onSubClick(grocery)
+        })
+
         binding.rvGroceryList.adapter = adapter
         binding.rvGroceryList.layoutManager = LinearLayoutManager(context)
 
+
+        // Observes and updates recyclerview if it changes
         groceryListViewModel.groceries.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
             Log.i(TAG, "grocery list updated")
         })
 
+        // Observer to navigate to shopping cart screen
         groceryListViewModel.navigateToShoppingCart.observe(viewLifecycleOwner, Observer {
             if (it) {
                 this.findNavController().navigate(GroceryListFragmentDirections.actionGroceryListFragmentToShoppingCartFragment())
@@ -50,16 +62,13 @@ class GroceryListFragment : Fragment() {
 
         setHasOptionsMenu(true)
         activity?.title = "Grocery List"
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Run once when building the app for the first time, afterwards can comment out
-        //groceryListViewModel.init()
-
-        groceryListViewModel.fetchGroceries()
+        groceryListViewModel.init()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

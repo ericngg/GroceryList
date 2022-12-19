@@ -7,6 +7,13 @@
         <variable
             name="grocery"
             type="project.eric.grocerylist.database.Grocery" />
+
+        <variable
+            name="addClickListener"
+            type="project.eric.grocerylist.list.GroceryAdapter.AddGroceryListener" />
+        <variable
+            name="subClickListener"
+            type="project.eric.grocerylist.list.GroceryAdapter.SubGroceryListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,14 +34,27 @@
             tools:text="Banana" />
 
         <ImageButton
+            android:id="@+id/ibSub"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="@color/white"
+            android:onClick="@{() -> subClickListener.onSubClick(grocery)}"
+            app:layout_constraintEnd_toStartOf="@+id/ibAdd"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_remove_circle_outline_24"
+            app:tint="@color/black" />
+
+        <ImageButton
             android:id="@+id/ibAdd"
+            android:onClick="@{() -> addClickListener.onAddClick(grocery)}"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:backgroundTint="@color/white"
-            android:tint="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_add" />
+            app:srcCompat="@drawable/ic_baseline_add_circle_outline_24"
+            app:tint="@color/black" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -2,6 +2,7 @@ package project.eric.grocerylist.list
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,43 +24,93 @@ class GroceryListViewModel(val dao: GroceryDatabaseDao, application: Application
     val navigateToShoppingCart
         get() = _navigateToShoppingCart
 
+    /**
+     *  Initialize the database with fake data if app runs for the first time, otherwise
+     *  it populates the app with the data from the database
+     */
     fun init() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val list = listOf<String>("Apple", "Banana", "Carrot", "Donuts", "Eggs", "Fish", "Garlic")
-                var count = 1
+                val result = dao.getAllGroceries()
 
-                val groceries = mutableListOf<Grocery>()
+                if (result.size == 0) {
+                    val list = listOf<String>("Apple", "Banana", "Carrot", "Donuts", "Eggs", "Fish", "Garlic")
+                    var count = 1
 
-                for (grocery in list) {
-                    val grocery = Grocery(count.toLong(), grocery)
-                    count++
+                    val groceries = mutableListOf<Grocery>()
 
-                    groceries.add(grocery)
+                    for (grocery in list) {
+                        val grocery = Grocery(count.toLong(), grocery, 0)
+                        count++
+                        groceries.add(grocery)
+                    }
+
+                    dao.insertAll(groceries)
+                    _groceries.postValue(dao.getAllGroceries())
+                } else {
+                    _groceries.postValue(result)
                 }
 
-                dao.insertAll(groceries)
             } catch (e: Exception) {
                 Log.e(TAG, "Groceries list fetch error $e")
             }
         }
     }
 
-    fun fetchGroceries() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                _groceries.postValue(dao.getAllGroceries())
-            } catch (e: Exception) {
-                Log.e(TAG, "Groceries list fetch error $e")
-            }
-        }
-    }
-
+    /**
+     *  Starts navigation to shopping cart screen
+     */
     fun onNavigateToShoppingCart() {
         _navigateToShoppingCart.value = true
     }
 
+    /**
+     *  Ends navigation to shopping cart screen
+     */
     fun onNavigatedToShoppingCart() {
         _navigateToShoppingCart.value = false
+    }
+
+    /**
+     *  onClick function for add button
+     */
+    fun onAddClick(grocery: Grocery) {
+        Log.i("test", "Add")
+
+        grocery.count++
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                dao.update(grocery)
+                Log.i("test", "success")
+            } catch (e: Exception) {
+                Log.e(TAG, "Groceries list error adding a grocery")
+            }
+        }
+
+        Toast.makeText(getApplication(), "${grocery.name} added!", Toast.LENGTH_SHORT).show()
+    }
+
+    /**
+     *  onClick function for subtract button
+     */
+    fun onSubClick(grocery: Grocery) {
+        Log.i("test", "Sub")
+        if (grocery.count > 0) {
+            grocery.count--
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    dao.update(grocery)
+                    Log.i("test", "success")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Shopping grocery subtract updated")
+                }
+            }
+
+            Toast.makeText(getApplication(), "${grocery.name} subtracted!", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(getApplication(), "You don't have any ${grocery.name}!", Toast.LENGTH_SHORT).show()
+        }
     }
 }

@@ -8,19 +8,23 @@ import androidx.recyclerview.widget.RecyclerView
 import project.eric.grocerylist.database.Grocery
 import project.eric.grocerylist.databinding.ItemGroceryBinding
 
-class GroceryAdapter : ListAdapter<Grocery, GroceryAdapter.ViewHolder>(GroceryDiffCallback()) {
+class GroceryAdapter(
+    private val addClickListener: AddGroceryListener,
+    private val subClickListener: SubGroceryListener) : ListAdapter<Grocery, GroceryAdapter.ViewHolder>(GroceryDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position)!!)
+        holder.bind(addClickListener, subClickListener, getItem(position)!!)
     }
 
     class ViewHolder(private val binding: ItemGroceryBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(grocery: Grocery) {
+        fun bind(addClickListener: AddGroceryListener, subClickListener: SubGroceryListener, grocery: Grocery) {
             binding.grocery = grocery
+            binding.addClickListener = addClickListener
+            binding.subClickListener = subClickListener
             binding.executePendingBindings()
         }
 
@@ -34,7 +38,9 @@ class GroceryAdapter : ListAdapter<Grocery, GroceryAdapter.ViewHolder>(GroceryDi
         }
     }
 
-    // DiffUtil for list change
+    /**
+     *  DiffUtil for recyclelist changes
+     */
     class GroceryDiffCallback: DiffUtil.ItemCallback<Grocery>() {
         override fun areItemsTheSame(oldItem: Grocery, newItem: Grocery): Boolean {
             return oldItem.id == newItem.id
@@ -43,5 +49,19 @@ class GroceryAdapter : ListAdapter<Grocery, GroceryAdapter.ViewHolder>(GroceryDi
         override fun areContentsTheSame(oldItem: Grocery, newItem: Grocery): Boolean {
             return oldItem == newItem
         }
+    }
+
+    /**
+     *  clickListener for add button
+     */
+    class AddGroceryListener(val clickListener: (grocery: Grocery) -> Unit) {
+        fun onAddClick(grocery: Grocery) = clickListener(grocery)
+    }
+
+    /**
+     *  clickListener for subtract button
+     */
+    class SubGroceryListener(val clickListener: (grocery: Grocery) -> Unit) {
+        fun onSubClick(grocery: Grocery) = clickListener(grocery)
     }
 }

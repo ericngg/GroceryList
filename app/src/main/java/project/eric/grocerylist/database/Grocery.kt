@@ -10,5 +10,8 @@ data class Grocery(
     var id: Long = 0L,
 
     @ColumnInfo(name = "name")
-    val name: String
+    val name: String,
+
+    @ColumnInfo(name = "count")
+    var count: Int
 )
