@@ -12,6 +12,12 @@ The following **required** functionality is completed:
 * [X] Items in the grocery list must be saved to file or database when the list is modified.
 * [X] Grocery list should be loaded from file or database when the app is opened.
 
+## Walkthrough Instructions
+
+Download the project and run it on an emulator.
+
+App tested on Pixel 4 API 30 and a custom Samsung S20 API 30 emulator
+
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
